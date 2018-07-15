@@ -56,7 +56,7 @@ func (eth *LightEthereum) startBloomHandlers() {
 					task.Bitsets = make([][]byte, len(task.Sections))
 					compVectors, err := light.GetBloomBits(task.Context, eth.odr, task.Bit, task.Sections)
 					if err == nil {
-						for i, _ := range task.Sections {
+						for i := range task.Sections {
 							if blob, err := bitutil.DecompressBytes(compVectors[i], int(light.BloomTrieFrequency/8)); err == nil {
 								task.Bitsets[i] = blob
 							} else {
@@ -72,13 +72,3 @@ func (eth *LightEthereum) startBloomHandlers() {
 		}()
 	}
 }
-
-const (
-	// bloomConfirms is the number of confirmation blocks before a bloom section is
-	// considered probably final and its rotated bits are calculated.
-	bloomConfirms = 256
-
-	// bloomThrottling is the time to wait between processing two consecutive index
-	// sections. It's useful during chain upgrades to prevent disk overload.
-	bloomThrottling = 100 * time.Millisecond
-)
